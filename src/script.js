@@ -1,4 +1,4 @@
-// ! load and append child all plant data function
+// ! start load and append child all plant data function
 const allPlantsLoad = () => {
   const allPlantsLoadApi = `https://openapi.programming-hero.com/api/plants`;
 
@@ -15,8 +15,6 @@ const allPlants = document.getElementById("all-Plants");
 const displayAllPlantsLoad = (json) => {
   allPlants.innerHTML = "";
   json.map((item) => {
-    console.log(item.name);
-
     const containerDiv = document.createElement("div");
 
     containerDiv.innerHTML = `
@@ -54,8 +52,32 @@ const displayAllPlantsLoad = (json) => {
     allPlants.appendChild(containerDiv);
   });
 };
-
 allPlantsLoad();
+//! End load and append child all plant data function
+
+// ?```````````````````````````````````````
+
+// ! start plants by categories with btn click
+
+const plantsByCategories = (id) => {
+  const clickToCategories = `https://openapi.programming-hero.com/api/category/${id}`;
+
+  fetch(clickToCategories)
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      displayPlantsByCategories(json.plants);
+    });
+};
+
+const displayPlantsByCategories = (jsonItem) => {
+  displayAllPlantsLoad(jsonItem);
+};
+
+//  ! End plants by categories with btn click
+
+// ?```````````````````````````````````````
 
 // ! load and create btn  categories
 const categories = () => {
@@ -67,21 +89,31 @@ const categories = () => {
       arrayTo(json.categories);
     });
 };
+
 const CategoriesBtn = document.getElementById("Categories-btn");
+
 const arrayTo = (array) => {
-  array.map((item) => {
+  array.forEach((item) => {
+    // create btn
+    const btn = document.createElement("button");
+    btn.className = "btn w-full";
+    btn.textContent = item.category_name;
+
+    btn.addEventListener("click", () => {
+      plantsByCategories(item.id);
+    });
+
     const btnDiv = document.createElement("div");
-    btnDiv.innerHTML = `<button class="btn w-full">${item.category_name}</button>`;
+    btnDiv.appendChild(btn);
 
     CategoriesBtn.appendChild(btnDiv);
   });
 };
+
 categories();
 
 // ! call and display data img  and other content
 
-const displayImgAndOtherData = (plants) => {
-  // console.log(plants);
-};
+const displayImgAndOtherData = (plants) => {};
 
 allPlantsLoad();
