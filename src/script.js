@@ -14,41 +14,15 @@ const allPlantsLoad = () => {
 const allPlants = document.getElementById("all-Plants");
 const displayAllPlantsLoad = (json) => {
   allPlants.innerHTML = "";
-  json.map((item) => {
+  json.forEach((item) => {
     const containerDiv = document.createElement("div");
 
     containerDiv.innerHTML = `
-    <div class="bg-white p-4 rounded-lg space-y-3 w-full h-full">
-                <figure class="w-full h-[186px] overflow-hidden rounded-lg">
-                  <img
-                    class=" w-full h-full object-cover "
-                    src="${item.image}"
-                    alt=""
-                  />
-                </figure>
-                <div>
-                  <h2
-                    class="font-medium text-lg leading-10 text-left text-[#012937]"
-                  >
-                 ${item.name}
-                  </h2>
-                  <p>${item.description}</p>
-                </div>
-                <div class="flex items-center justify-between">
-                  <p
-                    class="px-3 py-1 rounded-full text-[#1a7d5b] bg-[#dcfce7] font-bold"
-                  >
-                    ${item.category}
-                  </p>
-                  <span>৳${item.price}</span>
-                </div>
-                <button
-                  class="btn w-full rounded-full mt-3 bg-[#1a7d5b] text-white"
-                >
-                 Add to Cart
-                </button>
-              </div>`;
-
+ <div class="bg-white p-4 rounded-lg space-y-3 w-full h-full">
+<figure class="w-full h-[186px] overflow-hidden rounded-lg">
+<img class=" w-full h-full object-cover "
+ src="${item.image}" alt=""/></figure><div> <h2 class="font-medium text-lg leading-10 text-left text-[#012937]"> ${item.name} </h2> <p>${item.description}</p> </div> <div class="flex items-center justify-between"> <p class="px-3 py-1 rounded-full text-[#1a7d5b] bg-[#dcfce7] font-bold"  >${item.category}</p> <span>৳${item.price}</span></div><button class="btn w-full rounded-full mt-3 bg-[#1a7d5b] text-white" >Add to Cart
+</button></div>`;
     allPlants.appendChild(containerDiv);
   });
 };
