@@ -21,9 +21,22 @@ const displayAllPlantsLoad = (json) => {
  <div class="bg-white p-4 rounded-lg space-y-3 w-full h-full">
 <figure class="w-full h-[186px] overflow-hidden rounded-lg">
 <img class=" w-full h-full object-cover "
- src="${item.image}" alt=""/></figure><div> <h2   onclick="modalFunction(${item.id})"  class="font-medium text-lg leading-10 text-left text-[#012937] cursor-pointer"  > ${item.name} </h2> <p>${item.description}</p> </div> <div class="flex items-center justify-between"> <p class="px-3 py-1 rounded-full text-[#1a7d5b] bg-[#dcfce7] font-bold"  >${item.category}</p> <span>৳${item.price}</span></div><button onclick="addToCart(${item.id},${item.name} ,${item.price})"  class="btn w-full rounded-full mt-3 bg-[#1a7d5b] text-white" >Add to Cart
+ src="${item.image}" alt=""/></figure>
+ <div> 
+ <h2   onclick="modalFunction(${item.id})"  class="font-medium card-title text-lg leading-10 text-left text-[#012937] cursor-pointer"  > ${item.name} </h2> <p>${item.description}</p> </div> <div class="flex items-center justify-between"> <p class="px-3 py-1 rounded-full text-[#1a7d5b] bg-[#dcfce7] font-bold"  >${item.category}</p> <span class="card-price">৳${item.price}</span></div><button data-id="${item.id}" data-name="${item.name}" data-price="${item.price}"  class="btn add-btn w-full rounded-full mt-3 bg-[#1a7d5b] text-white" >Add to Cart
 </button></div>`;
     allPlants.appendChild(containerDiv);
+    //  Click Handler
+    const addedBtn = containerDiv.querySelector(".add-btn");
+    if (addedBtn) {
+      addedBtn.addEventListener("click", () => {
+        // All Attributes
+        const id = addedBtn.getAttribute("data-id");
+        const name = addedBtn.getAttribute("data-name");
+        const price = addedBtn.getAttribute("data-price");
+        addToCart(id, name, price);
+      });
+    }
   });
 };
 allPlantsLoad();
@@ -60,7 +73,7 @@ const displayPlantsDetail = (item) => {
                   </figure>
                   <div>
                     <h2
-                      class="font-medium text-lg leading-10 text-left text-[#012937]"
+                      class="font-medium card-title text-lg leading-10 text-left text-[#012937]"
                       onclick="modalFunction(${item.id})"
                     >
                       ${item.name}
@@ -73,18 +86,23 @@ const displayPlantsDetail = (item) => {
                     >
                       ${item.category}
                     </p>
-                    <span>৳${item.price}</span>
+                    <span class='card-price' >৳${item.price}</span>
                   </div>
-                  <button
-                    class="btn w-full rounded-full mt-3 bg-[#1a7d5b] text-white"
+                  <button 
+                    class="btn add-btns w-full rounded-full mt-3 bg-[#1a7d5b] text-white"
                   >
                     Add to Cart
                   </button>
                 </div>`;
 
   modalInputDev.appendChild(modalCreateDiv);
-
-  const bxModal = document.getElementById("my_modal_5").showModal();
+  // open dialog safely
+  const modalEl = document.getElementById("my_modal_5");
+  if (modalEl && typeof modalEl.showModal === "function") {
+    modalEl.showModal();
+  } else {
+    modalEl && modalEl.classList.add("open");
+  }
 };
 //! End  modalFunction
 
@@ -157,4 +175,66 @@ const arrayTo = (array) => {
 };
 categories();
 
-//! store local variable
+let cart = [];
+
+const displayCart = (cartItems) => {
+  const cartContainer = document.getElementById("cart");
+  const totalEl = document.getElementById("total");
+  if (!cartContainer) return;
+  cartContainer.innerHTML = "";
+
+  if (!cartItems || cartItems.length === 0) {
+    if (totalEl) totalEl.textContent = "৳ 0";
+    return;
+  }
+
+  let totalPrice = 0;
+  cartItems.forEach((item) => {
+    const { cartItemId, name, price } = item;
+    const row = document.createElement("div");
+    row.className =
+      "flex justify-between cart-sec items-center p-3 rounded-md align-middle bg-[#F0FDF4]";
+    row.innerHTML = `
+      <div>
+        <h1 class="text-xl font-bold">${name}</h1>
+        <p class="text-sm text-gray-500 font-medium">৳ ${price}</p>
+      </div>
+      <div class='actions'>
+        <button class='cancel btn btn-sm'>❌</button>
+      </div>`;
+
+    const cancelBtn = row.querySelector(".cancel");
+    cancelBtn &&
+      cancelBtn.addEventListener("click", () => {
+        cart = cartItems.filter(
+          (c) => String(c.cartItemId) !== String(cartItemId)
+        );
+        displayCart(cart);
+      });
+
+    cartContainer.appendChild(row);
+    totalPrice += Number(price) || 0;
+  });
+
+  if (totalEl) totalEl.textContent = `৳ ${totalPrice}`;
+};
+
+// addToCart: Add LocalStorage also, no quantities
+function addToCart(id, name, price) {
+  const cartItem = {
+    cartItemId: Date.now().toString() + Math.floor(Math.random() * 1000),
+    id,
+    name,
+    price: Number(price) || 0,
+  };
+  cart.push(cartItem);
+  // re-render cart UI
+  displayCart(cart);
+  console.log("Cart updated:", cart);
+}
+
+// initialize in-memory cart (start empty)
+(function initCart() {
+  cart = [];
+  displayCart(cart);
+})();
