@@ -196,11 +196,11 @@ const displayCart = (cartItems) => {
       "flex justify-between cart-sec items-center p-3 rounded-md align-middle bg-[#F0FDF4]";
     row.innerHTML = `
       <div>
-        <h1 class="text-xl font-bold">${name}</h1>
+        <h3 class="text-lg font-normal">${name}</h3>
         <p class="text-sm text-gray-500 font-medium">৳ ${price}</p>
       </div>
       <div class='actions'>
-        <button class='cancel btn btn-sm'>❌</button>
+        <button class='cancel btn-sm cursor-pointer'><i class="bi bi-x-lg"></i></button>
       </div>`;
 
     const cancelBtn = row.querySelector(".cancel");
